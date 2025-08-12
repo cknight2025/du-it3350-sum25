@@ -1,69 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Date and Time Card</title>
-    <style>
-        .card {
-            width: 185px;
-            height: 185px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 10px;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .label {
-            font-weight: bold;
-            font-size: 15px;
-            margin: 0;
-        }
-        .value {
-            color: blue;
-            font-size: 14px;
-            margin: 4px 0 8px;
-        }
-        .button {
-            padding: 4px 8px;
-            font-size: 12px;
-            align-self: center;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Date and Time Card</title>
+  <link rel="stylesheet" href="main.css" />
 </head>
 <body>
+    <center>
+  <main class="card" role="region" aria-labelledby="cardTitle">
     <div class="card">
-		<center>
-        <div>
-            <p class="label">Current Date:</p>
-            <p id="date" class="value">Loading...</p>
-            <p class="label">Current Time:</p>
-            <p id="time" class="value">Loading...</p>
-        </div>
-		</center>
-        <button class="button" onclick="loadDateTime()">Refresh</button>
+      <h1 id="cardTitle" class="label title">Current Date & Time</h1>
+
+      <div>
+        <p class="label">Current Date:</p>
+        <p id="date" class="value">Loading...</p>
+
+        <p class="label">Current Time:</p>
+        <p id="time" class="value">Loading...</p>
+      </div>
+
+      <button class="button" type="button" id="refreshBtn">Refresh</button>
     </div>
+</center>
+  </main>
 
-    <script>
-        async function loadDateTime() {
-            try {
-                const res = await fetch('https://worldtimeapi.org/api/ip');
-                const data = await res.json();
-                const dateTime = new Date(data.datetime);
-                document.getElementById('date').textContent = dateTime.toLocaleDateString();
-                document.getElementById('time').textContent = dateTime.toLocaleTimeString();
-            } catch (err) {
-                console.error('Error fetching time:', err);
-                document.getElementById('date').textContent = 'Error';
-                document.getElementById('time').textContent = 'Error';
-            }
-        }
-
-        // Auto-load on page load
-        window.addEventListener('load', loadDateTime);
-    </script>
+  <script>
+    async function loadDateTime() {
+      try {
+        const res = await fetch('https://worldtimeapi.org/api/ip');
+        if (!res.ok) throw new Error('Network error');
+        const data = await res.json();
+        const dateTime = new Date(data.datetime);
+        document.getElementById('date').textContent = dateTime.toLocaleDateString();
+        document.getElementById('time').textContent = dateTime.toLocaleTimeString();
+      } catch (err) {
+        console.error('Error fetching time:', err);
+        document.getElementById('date').textContent = 'Error';
+        document.getElementById('time').textContent = 'Error';
+      }
+    }
+    window.addEventListener('load', loadDateTime);
+    document.getElementById('refreshBtn').addEventListener('click', loadDateTime);
+  </script>
 </body>
 </html>
